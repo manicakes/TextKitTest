@@ -51,9 +51,9 @@ class ViewController: UIViewController, UIScrollViewDelegate {
         case UIUserInterfaceSizeClass.Compact:
             numColumns = 1
         case UIUserInterfaceSizeClass.Regular:
-            numColumns = 2
+            numColumns = 3
         default:
-            numColumns = 2
+            numColumns = 3
         }
         
         // first blow away existing containers
@@ -92,18 +92,20 @@ class ViewController: UIViewController, UIScrollViewDelegate {
             lastRenderedGlyph = NSMaxRange(layoutManager.glyphRangeForTextContainer(textContainer))
         }
         
-        // add an empty space to make sure we fill a full page for last page
-        if numTextViews % numColumns != 0 {
+        // add empty spaces to make sure we fill a full page for last page
+        let modulo = numTextViews % numColumns
+        if modulo != 0 {
             let textViewFrame = CGRectMake(currentXOffset, 0,
                 CGRectGetWidth(self.view.bounds) / CGFloat(numColumns),
                 CGRectGetHeight(self.view.bounds))
-            currentXOffset += CGRectGetWidth(textViewFrame)
+            currentXOffset += CGRectGetWidth(textViewFrame) * CGFloat(numColumns - modulo)
         }
         
         // update scrollview size
         let contentSize = CGSizeMake(currentXOffset, CGRectGetHeight(self.scrollView.bounds))
         self.scrollView.contentSize = contentSize
-        self.pageControl.numberOfPages = Int(scrollView.contentSize.width / scrollView.bounds.width)
+        self.pageControl.numberOfPages = Int((scrollView.contentSize.width+1) / scrollView.bounds.width)
+        NSLog("Numpages: %f", Int(scrollView.contentSize.width / scrollView.bounds.width))
     }
     
     // MARK - UIScrollViewDelegate
@@ -118,7 +120,7 @@ class ViewController: UIViewController, UIScrollViewDelegate {
     
     func scrollViewDidEndDecelerating(scrollView: UIScrollView) {
         let width = scrollView.frame.size.width
-        let xPos = scrollView.contentOffset.x+10
+        let xPos = scrollView.contentOffset.x+1
         
         //Calculate the page we are on based on x coordinate position and width of scroll view
         let value = Int(xPos/width)
