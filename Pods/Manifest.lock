@@ -1,0 +1,10 @@
+PODS:
+  - ZFDragableModalTransition (0.5.1)
+
+DEPENDENCIES:
+  - ZFDragableModalTransition
+
+SPEC CHECKSUMS:
+  ZFDragableModalTransition: 048189eda437f91944ce6d5151618b8bf770196d
+
+COCOAPODS: 0.38.2
