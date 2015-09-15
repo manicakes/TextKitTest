@@ -36,25 +36,23 @@ class ViewController: UIViewController, UIScrollViewDelegate {
         
         layoutTextContainers()
     }
-
-    override func didReceiveMemoryWarning() {
-        super.didReceiveMemoryWarning()
-        // Dispose of any resources that can be recreated.
+    
+    class func numColumnsForViewSize(viewSize : CGSize) -> Int {
+        var numColumns = 1
+        let minColumnWidth : CGFloat = 240
+        let maxColumnWidth : CGFloat = 320
+        
+        while (viewSize.width/(CGFloat(numColumns + 1)) > minColumnWidth
+            && viewSize.width/CGFloat(numColumns) > maxColumnWidth) {
+            ++numColumns
+        }
+        
+        return numColumns
     }
     
     func layoutTextContainers() {
         // first determine how many columns based on size class.
-        let horizontalSizeClass = self.traitCollection.horizontalSizeClass
-        var numColumns : Int
-        
-        switch (horizontalSizeClass) {
-        case UIUserInterfaceSizeClass.Compact:
-            numColumns = 1
-        case UIUserInterfaceSizeClass.Regular:
-            numColumns = 3
-        default:
-            numColumns = 3
-        }
+        let numColumns = ViewController.numColumnsForViewSize(self.scrollView.bounds.size)
         
         // first blow away existing containers
         self.scrollView.subviews.forEach { (aView : UIView) -> () in
@@ -79,7 +77,7 @@ class ViewController: UIViewController, UIScrollViewDelegate {
             let textContainer = NSTextContainer(size: textViewFrame.size)
             layoutManager.addTextContainer(textContainer)
             let textView = UITextView(frame: textViewFrame, textContainer: textContainer)
-            textView.textContainerInset = UIEdgeInsetsMake(20, 20, 60, 20)
+            textView.textContainerInset = UIEdgeInsetsMake(10, 10, 50, 10)
             textView.scrollEnabled = false
             textView.backgroundColor = self.view.backgroundColor
             numTextViews += 1
@@ -109,14 +107,6 @@ class ViewController: UIViewController, UIScrollViewDelegate {
     }
     
     // MARK - UIScrollViewDelegate
-    
-    func scrollViewDidEndScrollingAnimation(scrollView: UIScrollView) {
-
-    }
-    
-    func scrollViewDidScroll(scrollView: UIScrollView) {
-
-    }
     
     func scrollViewDidEndDecelerating(scrollView: UIScrollView) {
         let width = scrollView.frame.size.width
