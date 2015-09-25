@@ -20,12 +20,37 @@ class ViewController: UIViewController, UIScrollViewDelegate {
         super.viewDidLoad()
         
         do {
-            let myString = try NSString(contentsOfURL: NSBundle.mainBundle().URLForResource("Text", withExtension: "txt")!, encoding: NSUTF8StringEncoding)
-            let attrString = NSAttributedString(string: myString as String, attributes: [NSFontAttributeName:UIFont.preferredFontForTextStyle(UIFontTextStyleBody) ])
+//            let myString = try NSString(contentsOfURL: NSBundle.mainBundle().URLForResource("Text", withExtension: "txt")!, encoding: NSUTF8StringEncoding)
+//            let ppStyle = NSMutableParagraphStyle()
+//            ppStyle.alignment = NSTextAlignment.Justified
+//            ppStyle.firstLineHeadIndent = CGFloat(20.0)
+//            let attrString = NSAttributedString(string: myString as String, attributes: [NSFontAttributeName:UIFont.preferredFontForTextStyle(UIFontTextStyleBody), NSParagraphStyleAttributeName:ppStyle, NSForegroundColorAttributeName:UIColor.blackColor(), NSBackgroundColorAttributeName:UIColor.whiteColor()])
+//            
+//            textStore = NSTextStorage(attributedString: attrString)
+//            layoutManager = NSLayoutManager()
+//            textStore.addLayoutManager(layoutManager)
+            let articleDict : [String:String] = NSDictionary(contentsOfURL: NSBundle.mainBundle().URLForResource("Article", withExtension: "plist")!) as! [String:String]
+            let headlineStr = articleDict["headline"]! + "\n"
+            let subheadStr = articleDict["subhead"]! + "\n\n"
+            let authorStr = articleDict["author"]
+            let dateStr = articleDict["date"]
+            let bodyStr = articleDict["body"]
             
-            textStore = NSTextStorage(attributedString: attrString)
+            let headline = NSAttributedString(string: headlineStr, attributes: [NSFontAttributeName:UIFont.preferredFontForTextStyle(UIFontTextStyleTitle1), NSForegroundColorAttributeName:UIColor.blueColor()])
+            let subhead = NSAttributedString(string: subheadStr, attributes: [NSFontAttributeName:UIFont.preferredFontForTextStyle(UIFontTextStyleHeadline)])
+            let ppStyle = NSMutableParagraphStyle()
+            ppStyle.alignment = NSTextAlignment.Justified
+            ppStyle.firstLineHeadIndent = CGFloat(20.0)
+            let body = NSAttributedString(string: bodyStr!, attributes: [NSFontAttributeName:UIFont.preferredFontForTextStyle(UIFontTextStyleBody), NSParagraphStyleAttributeName:ppStyle])
+            
+            var article = NSMutableAttributedString(attributedString: headline)
+            article.appendAttributedString(subhead)
+            article.appendAttributedString(body)
+
+            textStore = NSTextStorage(attributedString: article)
             layoutManager = NSLayoutManager()
             textStore.addLayoutManager(layoutManager)
+            
         } catch {
             NSLog("Error loading string from file.")
         }
@@ -103,7 +128,6 @@ class ViewController: UIViewController, UIScrollViewDelegate {
         let contentSize = CGSizeMake(currentXOffset, CGRectGetHeight(self.scrollView.bounds))
         self.scrollView.contentSize = contentSize
         self.pageControl.numberOfPages = Int((scrollView.contentSize.width+1) / scrollView.bounds.width)
-        NSLog("Numpages: %f", Int(scrollView.contentSize.width / scrollView.bounds.width))
     }
     
     // MARK - UIScrollViewDelegate
